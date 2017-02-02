@@ -2191,7 +2191,7 @@ struct task_struct {
 	 */
 	u64 timer_slack_ns;
 	u64 default_timer_slack_ns;
-	
+
 	unsigned int			top_app;
  	unsigned int			inherit_top_app;
 
@@ -3631,27 +3631,6 @@ static inline void unlock_task_sighand(struct task_struct *tsk,
 	spin_unlock_irqrestore(&tsk->sighand->siglock, *flags);
 }
 
-/**
- * threadgroup_change_begin - mark the beginning of changes to a threadgroup
- * @tsk: task causing the changes
- *
- * All operations which modify a threadgroup - a new thread joining the
- * group, death of a member thread (the assertion of PF_EXITING) and
- * exec(2) dethreading the process and replacing the leader - are wrapped
- * by threadgroup_change_{begin|end}().  This is to provide a place which
- * subsystems needing threadgroup stability can hook into for
- * synchronization.
- */
-extern void threadgroup_change_begin(struct task_struct *tsk);
-
-/**
- * threadgroup_change_end - mark the end of changes to a threadgroup
- * @tsk: task causing the changes
- *
- * See threadgroup_change_begin().
- */
-extern void threadgroup_change_end(struct task_struct *tsk);
-
 #ifdef CONFIG_THREAD_INFO_IN_TASK
 
 static inline struct thread_info *task_thread_info(struct task_struct *task)
@@ -3822,7 +3801,7 @@ static inline int fatal_signal_pending(struct task_struct *p)
 	return signal_pending(p) && __fatal_signal_pending(p);
 }
 
-#ifdef VENDOR_EDIT 
+#ifdef VENDOR_EDIT
 /*fangpan@Swdp.shanghai,2015/11/12*/
 static inline int hung_long_and_fatal_signal_pending(struct task_struct *p)
 {
