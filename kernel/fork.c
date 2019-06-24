@@ -78,6 +78,7 @@
 #include <linux/sysctl.h>
 #include <linux/kcov.h>
 #include <linux/cpufreq_times.h>
+#include <linux/simple_lmk.h>
 
 #include <asm/pgtable.h>
 #include <asm/pgalloc.h>
@@ -1039,6 +1040,8 @@ static inline void __mmput(struct mm_struct *mm)
 	}
 	if (mm->binfmt)
 		module_put(mm->binfmt->module);
+	set_bit(MMF_OOM_SKIP, &mm->flags);
+	simple_lmk_mm_freed(mm);
 	mmdrop(mm);
 }
 
@@ -2195,10 +2198,10 @@ long _do_fork(unsigned long clone_flags,
 			init_completion(&vfork);
 			get_task_struct(p);
 		}
-		
+
 		p->top_app = 0;
  		p->inherit_top_app = 0;
-		
+
 		wake_up_new_task(p);
 
 		/* forking complete and child started to run, tell ptracer */
